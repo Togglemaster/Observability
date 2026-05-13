@@ -1,0 +1,90 @@
+kind: "DatadogAgent"
+apiVersion: "datadoghq.com/v2alpha1"
+metadata:
+  name: "datadog"
+  namespace: "datadog"
+  annotations:
+    agent.datadoghq.com/private-action-runner-enabled: "true"
+    agent.datadoghq.com/private-action-runner-configdata: |
+      private_action_runner:
+        enabled: true
+        self_enroll: true
+        actions_allowlist:
+          - com.datadoghq.script.runPredefinedScript
+    cluster-agent.datadoghq.com/private-action-runner-enabled: "true"
+    cluster-agent.datadoghq.com/private-action-runner-configdata: |
+      private_action_runner:
+        enabled: true
+        self_enroll: true
+        actions_allowlist:
+          - com.datadoghq.script.runPredefinedScript
+    agent.datadoghq.com/appsec.injector.enabled: "true"
+spec:
+  global:
+    clusterName: "your-cluster-name-here"
+    site: "datadoghq.com"
+    credentials:
+      apiSecret:
+        secretName: "datadog-secret"
+        keyName: "api-key"
+      appSecret:
+        secretName: "datadog-secret"
+        keyName: "app-key"
+  features:
+    clusterChecks:
+      enabled: true
+    orchestratorExplorer:
+      enabled: true
+    apm:
+      instrumentation:
+        enabled: true
+        targets:
+          - name: "default-target"
+            ddTraceVersions:
+              java: "1"
+              python: "4"
+              js: "5"
+              php: "1"
+              dotnet: "3"
+              ruby: "2"
+            ddTraceConfigs:
+              - name: "DD_PROFILING_ENABLED"
+                value: "auto"
+              - name: "DD_DATA_STREAMS_ENABLED"
+                value: "true"
+              - name: "DD_RUM_ENABLED"
+                value: "true"
+              - name: "DD_RUM_APPLICATION_ID"
+                value: "3b131b13-dea0-4911-9bb0-7f7c39776cb9"
+              - name: "DD_RUM_CLIENT_TOKEN"
+                value: "pub43ada9d20e876abad1e740e6ce20225c"
+              - name: "DD_RUM_REMOTE_CONFIGURATION_ID"
+                value: "ad24b65e-ff0c-4bd6-8144-2a00ca32dfed"
+              - name: "DD_RUM_SITE"
+                value: "datadoghq.com"
+    logCollection:
+      enabled: true
+      containerCollectAll: true
+    asm:
+      threats:
+        enabled: true
+      sca:
+        enabled: true
+      iast:
+        enabled: true
+    cws:
+      enabled: true
+    cspm:
+      enabled: true
+    sbom:
+      enabled: true
+      containerImage:
+        enabled: true
+      host:
+        enabled: true
+    usm:
+      enabled: true
+    npm:
+      enabled: true
+    liveProcessCollection:
+      enabled: true

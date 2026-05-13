@@ -1,0 +1,11 @@
+apiVersion: v2
+name: datadog
+description: Datadog Operator + Agent installation for Togglemaster
+type: application
+version: 0.1.0
+appVersion: "7.58.0"
+
+dependencies:
+  - name: datadog-operator
+    version: 2.4.0
+    repository: https://helm.datadoghq.com

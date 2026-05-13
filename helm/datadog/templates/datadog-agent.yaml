@@ -1,0 +1,89 @@
+apiVersion: datadoghq.com/v2alpha1
+kind: DatadogAgent
+metadata:
+  name: datadog
+  namespace: {{ .Release.Namespace }}
+  annotations:
+    agent.datadoghq.com/private-action-runner-enabled: "true"
+    agent.datadoghq.com/private-action-runner-configdata: |
+      private_action_runner:
+        enabled: true
+        self_enroll: true
+        actions_allowlist:
+          - com.datadoghq.script.runPredefinedScript
+    cluster-agent.datadoghq.com/private-action-runner-enabled: "true"
+    cluster-agent.datadoghq.com/private-action-runner-configdata: |
+      private_action_runner:
+        enabled: true
+        self_enroll: true
+        actions_allowlist:
+          - com.datadoghq.script.runPredefinedScript
+spec:
+  global:
+    clusterName: {{ .Values.clusterName | quote }}
+    site: {{ .Values.site | quote }}
+    credentials:
+      apiSecret:
+        secretName: datadog-secret
+        keyName: api-key
+      appSecret:
+        secretName: datadog-secret
+        keyName: app-key
+  features:
+    clusterChecks:
+      enabled: true
+    orchestratorExplorer:
+      enabled: true
+    apm:
+      instrumentation:
+        enabled: true
+        targets:
+          - name: default-target
+            ddTraceVersions:
+              java: "1"
+              python: "4"
+              js: "5"
+              php: "1"
+              dotnet: "3"
+              ruby: "2"
+            ddTraceConfigs:
+              - name: DD_PROFILING_ENABLED
+                value: "auto"
+              - name: DD_DATA_STREAMS_ENABLED
+                value: "true"
+              - name: DD_RUM_ENABLED
+                value: "true"
+              - name: DD_RUM_APPLICATION_ID
+                value: {{ .Values.rum.applicationId | quote }}
+              - name: DD_RUM_CLIENT_TOKEN
+                value: {{ .Values.rum.clientToken | quote }}
+              - name: DD_RUM_REMOTE_CONFIGURATION_ID
+                value: {{ .Values.rum.remoteConfigurationId | quote }}
+              - name: DD_RUM_SITE
+                value: {{ .Values.rum.site | quote }}
+    logCollection:
+      enabled: true
+      containerCollectAll: true
+    asm:
+      threats:
+        enabled: true
+      sca:
+        enabled: true
+      iast:
+        enabled: true
+    cws:
+      enabled: true
+    cspm:
+      enabled: true
+    sbom:
+      enabled: true
+      containerImage:
+        enabled: true
+      host:
+        enabled: true
+    usm:
+      enabled: true
+    npm:
+      enabled: true
+    liveProcessCollection:
+      enabled: true

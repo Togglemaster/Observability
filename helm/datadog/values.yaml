@@ -1,0 +1,16 @@
+clusterName: "togglemaster-cluster"
+site: "datadoghq.com"
+
+# Sobrescrever via workflow (--set ou --values), nunca commitar valores reais.
+credentials:
+  apiKey: ""
+  appKey: ""
+
+rum:
+  applicationId: "3b131b13-dea0-4911-9bb0-7f7c39776cb9"
+  clientToken: "pub43ada9d20e876abad1e740e6ce20225c"
+  remoteConfigurationId: "ad24b65e-ff0c-4bd6-8144-2a00ca32dfed"
+  site: "datadoghq.com"
+
+datadog-operator:
+  replicaCount: 1
