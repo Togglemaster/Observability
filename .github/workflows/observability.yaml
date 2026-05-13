@@ -69,7 +69,7 @@ jobs:
           DD_API_KEY: ${{ secrets.API_KEY }}
           DD_APP_KEY: ${{ secrets.APP_KEY }}
         run: |
-          helm upgrade --install datadog "$CHART_PATH" \
+          helm upgrade --install datadog-operator "$CHART_PATH" \
             --namespace "$DATADOG_NAMESPACE" \
             --create-namespace \
             --set clusterName="$EKS_CLUSTER_NAME" \
