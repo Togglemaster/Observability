@@ -21,7 +21,7 @@ metadata:
     agent.datadoghq.com/appsec.injector.enabled: "true"
 spec:
   global:
-    clusterName: "your-cluster-name-here"
+    clusterName: "${EKS_CLUSTER_NAME}"
     site: "datadoghq.com"
     credentials:
       apiSecret:
