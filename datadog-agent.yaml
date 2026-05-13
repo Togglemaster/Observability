@@ -18,7 +18,6 @@ metadata:
         self_enroll: true
         actions_allowlist:
           - com.datadoghq.script.runPredefinedScript
-    agent.datadoghq.com/appsec.injector.enabled: "true"
 spec:
   global:
     clusterName: "${EKS_CLUSTER_NAME}"
