@@ -27,7 +27,7 @@ jobs:
       AWS_REGION: ${{ secrets.AWS_REGION }}
       EKS_CLUSTER_NAME: togglemaster-${{ inputs.environment }}-cluster
       DATADOG_NAMESPACE: datadog
-      CHART_PATH: Observability/helm/datadog
+      CHART_PATH: helm/datadog
 
     steps:
       - name: Checkout
