@@ -1,4 +1,4 @@
-name: Update Helm - Datadog
+name: Update Datadog (Helm)
 
 on:
   workflow_dispatch:
@@ -16,7 +16,7 @@ on:
 
 jobs:
   update-helm:
-    name: Update Helm (${{ inputs.environment }})
+    name: Update Datadog (${{ inputs.environment }}) (Helm)
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment }}
 
