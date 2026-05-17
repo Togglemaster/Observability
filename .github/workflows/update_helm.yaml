@@ -62,6 +62,9 @@ jobs:
           helm repo add datadog https://helm.datadoghq.com
           helm repo update
 
+      - name: Build chart dependencies
+        run: helm dependency build "$CHART_PATH"
+
       - name: Apply changes
         env:
           DD_API_KEY: ${{ secrets.API_KEY }}
