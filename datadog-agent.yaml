@@ -29,6 +29,9 @@ spec:
       appSecret:
         secretName: "datadog-secret"
         keyName: "app-key"
+    clusterAgentTokenSecret:
+      secretName: "datadog-secret"
+      keyName: "cluster-agent-token"
   features:
     clusterChecks:
       enabled: true

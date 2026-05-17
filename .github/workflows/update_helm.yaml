@@ -1,10 +1,10 @@
-name: Observability Deploy
+name: Update Helm - Datadog
 
 on:
   workflow_dispatch:
     inputs:
       environment:
-        description: "Environment to apply Secrets"
+        description: "Environment to update"
         required: true
         type: choice
         options:
@@ -13,16 +13,10 @@ on:
       confirm:
         description: "Type the environment name to confirm"
         required: true
-  workflow_call:
-    inputs:
-      environment:
-        description: "Environment (staging or production)"
-        required: true
-        type: string
 
 jobs:
-  datadog:
-    name: Deploy Datadog (${{ inputs.environment }})
+  update-helm:
+    name: Update Helm (${{ inputs.environment }})
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment }}
 
@@ -33,6 +27,13 @@ jobs:
       CHART_PATH: helm/datadog
 
     steps:
+      - name: Validate confirmation
+        run: |
+          if [ "${{ inputs.confirm }}" != "${{ inputs.environment }}" ]; then
+            echo "::error::Confirmation does not match environment. Got '${{ inputs.confirm }}', expected '${{ inputs.environment }}'."
+            exit 1
+          fi
+
       - name: Checkout
         uses: actions/checkout@v4
         with:
@@ -51,11 +52,6 @@ jobs:
             --region "$AWS_REGION" \
             --name "$EKS_CLUSTER_NAME"
 
-      - name: Validate kubectl
-        run: |
-          kubectl version --client
-          kubectl get nodes
-
       - name: Setup Helm
         uses: azure/setup-helm@v4
         with:
@@ -66,32 +62,19 @@ jobs:
           helm repo add datadog https://helm.datadoghq.com
           helm repo update
 
-      - name: Build chart dependencies
-        run: helm dependency update "$CHART_PATH"
-
-      - name: Deploy Datadog Operator
+      - name: Apply changes
         env:
           DD_API_KEY: ${{ secrets.API_KEY }}
           DD_APP_KEY: ${{ secrets.APP_KEY }}
           DD_CLUSTER_AGENT_TOKEN: ${{ secrets.CLUSTER_AGENT_TOKEN }}
         run: |
-          helm upgrade --install datadog-operator "$CHART_PATH" \
+          helm upgrade datadog-operator "$CHART_PATH" \
             --namespace "$DATADOG_NAMESPACE" \
-            --create-namespace \
+            --reuse-values \
             --set credentials.apiKey="$DD_API_KEY" \
             --set credentials.appKey="$DD_APP_KEY" \
             --set credentials.clusterAgentToken="$DD_CLUSTER_AGENT_TOKEN" \
             --wait --timeout 10m
-
-      - name: Wait for operator rollout
-        run: |
-          kubectl -n "$DATADOG_NAMESPACE" rollout status deploy/datadog-operator --timeout=5m
-
-      - name: Wait for DatadogAgent CRD
-        run: |
-          kubectl wait --for=condition=Established \
-            crd/datadogagents.datadoghq.com \
-            --timeout=2m
 
       - name: Apply DatadogAgent CR
         run: |
@@ -101,7 +84,9 @@ jobs:
         run: |
           echo "=== Pods ==="
           kubectl get pods -n "$DATADOG_NAMESPACE"
+          echo ""
           echo "=== DatadogAgent CR ==="
           kubectl get datadogagent -n "$DATADOG_NAMESPACE" -o wide || true
+          echo ""
           echo "=== Events (last 20) ==="
           kubectl get events -n "$DATADOG_NAMESPACE" --sort-by=.lastTimestamp | tail -20 || true

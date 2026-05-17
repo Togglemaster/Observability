@@ -5,6 +5,7 @@ site: "datadoghq.com"
 credentials:
   apiKey: ""
   appKey: ""
+  clusterAgentToken: ""
 
 rum:
   applicationId: "3b131b13-dea0-4911-9bb0-7f7c39776cb9"
