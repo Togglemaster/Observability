@@ -32,6 +32,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          repository: Togglemaster/Observability
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
