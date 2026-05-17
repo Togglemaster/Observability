@@ -12,10 +12,9 @@ on:
   workflow_call:
     inputs:
       environment:
-        description: 'Deployment environment'
+        description: "Environment (staging or production)"
         required: true
         type: string
-        default: staging
 
 jobs:
   datadog:
