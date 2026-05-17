@@ -4,11 +4,15 @@ on:
   workflow_dispatch:
     inputs:
       environment:
-        description: 'Deployment environment'
+        description: "Environment to apply Secrets"
         required: true
         type: choice
-        options: [staging, production]
-        default: staging
+        options:
+          - staging
+          - production
+      confirm:
+        description: "Type the environment name to confirm"
+        required: true
   workflow_call:
     inputs:
       environment:
